@@ -849,6 +849,12 @@ display_results_in_terminal() {
     done|column -t
     echo
 
+    echo "Certificate SHA256 fingerprints:"
+    for sha256 in "${cert_checksums[@]}"; do
+      echo "  $sha256"
+    done
+    echo
+
     if [[ ($sigalg =~ RSA && $pubkey -ge 2047) || ($cipher =~ ECDSA && $pubkey -gt 255) ]]; then
         pubkey="${c_green}${pubkey}${c_reset}"
     else
@@ -1001,7 +1007,7 @@ display_results_in_json() {
         echo -n "\"pubkey\":[\"${cipher_arr[2]//,/\",\"}\"],"
         echo -n "\"sigalg\":[\"${cipher_arr[3]//,/\",\"}\"],"
         echo -n "\"trusted\":\"${cipher_arr[4]//,/\",\"}\","
-        if [[ -n $CAPATH ]]; then
+        if [[ -n $SAVECRT ]]; then
             echo -n "\"certificates\":[${ciphercertificates[$ctr]}],"
         fi
         echo -n "\"ticket_hint\":\"${cipher_arr[5]}\","
